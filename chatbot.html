@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CareerGenius AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .chat-container {
+      scroll-behavior: smooth;
+    }
+    
+    .typing-indicator::after {
+      content: '...';
+      animation: dots 1.5s infinite;
+    }
+    
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+    
+    .markdown-style {
+      line-height: 1.6;
+    }
+    
+    .markdown-style ul, .markdown-style ol {
+      padding-left: 1.5em;
+      margin: 0.5em 0;
+    }
+    
+    .markdown-style li {
+      margin-bottom: 0.25em;
+    }
+    
+    .markdown-style strong {
+      font-weight: 600;
+    }
+    
+    .markdown-style em {
+      font-style: italic;
+    }
+    
+    .markdown-style a {
+      color: #3b82f6;
+      text-decoration: underline;
+    }
+    
+    .sidebar {
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar-hidden {
+      transform: translateX(-100%);
+    }
+    
+    .sidebar-visible {
+      transform: translateX(0);
+    }
+    
+    .file-preview {
+      max-width: 200px;
+      max-height: 200px;
+    }
+    
+    @media (min-width: 1024px) {
+      .sidebar {
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex">
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar fixed lg:relative z-20 w-64 h-full bg-white border-r lg:block sidebar-hidden lg:sidebar-visible">
+    <div class="flex flex-col h-full">
+      <!-- New Chat Button -->
+      <button id="new-chat-btn" class="mx-4 mt-4 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center justify-center space-x-2">
+        <i class="fas fa-plus text-blue-500"></i>
+        <span>New Chat</span>
+      </button>
+      
+      <!-- Chat History -->
+      <div class="flex-1 overflow-y-auto py-4">
+        <h3 class="px-4 text-sm font-medium text-gray-500 mb-2">Recent Chats</h3>
+        <div id="chat-history" class="space-y-1">
+          <!-- Chats will be added here dynamically -->
+        </div>
+      </div>
+      
+      <!-- Profile Section -->
+      <div class="p-4 border-t">
+        <button id="profile-btn" class="flex items-center space-x-3 w-full p-2 rounded-lg hover:bg-gray-50">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 flex items-center justify-center text-white font-semibold">CG</div>
+          <div class="text-left">
+            <p class="text-sm font-medium">CareerGenius AI</p>
+            <p class="text-xs text-gray-500">Free Plan</p>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Overlay for mobile -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden hidden"></div>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col h-screen overflow-hidden">
+    <!-- Header -->
+    <header class="bg-white border-b shadow-sm">
+      <div class="flex items-center justify-between p-4">
+        <button id="menu-btn" class="lg:hidden text-gray-600 hover:text-gray-800">
+          <i class="fas fa-bars text-lg"></i>
+        </button>
+        
+        <h1 class="text-xl font-semibold text-center flex-1">CareerGenius AI</h1>
+        
+        <div class="flex items-center space-x-4">
+          <button class="text-gray-600 hover:text-gray-800">
+            <i class="fas fa-sun"></i>
+          </button>
+          <button class="text-gray-600 hover:text-gray-800">
+            <i class="fas fa-bell"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Chat Area -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+      <!-- Welcome Message -->
+      <div id="welcome-message" class="flex-1 flex flex-col items-center justify-center p-4 text-center">
+        <div class="max-w-2xl mx-auto">
+          <div class="w-16 h-16 mx-auto bg-gradient-to-r from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white text-2xl font-bold mb-4">CG</div>
+          <h2 class="text-2xl font-bold mb-2">Welcome to CareerGenius AI!</h2>
+          <p class="text-gray-600 mb-6">Your AI-powered career advisor ready to help with job search, career planning, and professional development.</p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="p-4 bg-white border rounded-lg hover:border-blue-300 cursor-pointer">
+              <h3 class="font-semibold mb-2">Resume Review</h3>
+              <p class="text-sm text-gray-600">Get feedback on your resume</p>
+            </div>
+            <div class="p-4 bg-white border rounded-lg hover:border-blue-300 cursor-pointer">
+              <h3 class="font-semibold mb-2">Interview Prep</h3>
+              <p class="text-sm text-gray-600">Practice common questions</p>
+            </div>
+            <div class="p-4 bg-white border rounded-lg hover:border-blue-300 cursor-pointer">
+              <h3 class="font-semibold mb-2">Career Path</h3>
+              <p class="text-sm text-gray-600">Explore suitable careers</p>
+            </div>
+            <div class="p-4 bg-white border rounded-lg hover:border-blue-300 cursor-pointer">
+              <h3 class="font-semibold mb-2">Salary Guide</h3>
+              <p class="text-sm text-gray-600">Research compensation</p>
+            </div>
+          </div>
+          
+          <p class="text-sm text-gray-500">CareerGenius AI may produce inaccurate information about people, places, or facts.</p>
+        </div>
+      </div>
+      
+      <!-- Chat Messages -->
+      <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-6 chat-container hidden">
+        <!-- Messages will be added here dynamically -->
+      </div>
+
+      <!-- Input Area -->
+      <div class="sticky bottom-0 bg-white border-t pt-4 pb-6 px-4">
+        <div id="file-preview-container" class="mb-2 flex flex-wrap gap-2 hidden"></div>
+        
+        <form id="chat-form" class="relative">
+          <div class="flex items-center border rounded-lg overflow-hidden shadow-sm bg-white">
+            <button type="button" id="attach-btn" class="px-3 text-gray-500 hover:text-gray-700">
+              <i class="fas fa-paperclip"></i>
+              <input type="file" id="file-input" class="hidden" accept="image/*,.pdf,.doc,.docx,.txt" multiple>
+            </button>
+            
+            <input
+              id="user-input"
+              type="text"
+              placeholder="Ask about careers, education, or professional development..."
+              class="flex-grow p-3 focus:outline-none"
+              autocomplete="off"
+              required
+            />
+            
+            <button type="button" id="voice-btn" class="px-3 text-gray-500 hover:text-gray-700">
+              <i class="fas fa-microphone"></i>
+            </button>
+            
+            <button
+              type="submit"
+              class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50"
+              id="send-btn"
+            >
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </form>
+        
+        <p class="text-xs text-gray-500 mt-2 text-center">CareerGenius AI may produce inaccurate information about people, places, or facts.</p>
+      </div>
+    </main>
+  </div>
+  
+  <!-- Profile Modal -->
+  <div id="profile-modal" class="fixed inset-0 bg-black bg-opacity-50 z-30 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg w-full max-w-md mx-4">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">My Profile</h3>
+          <button id="close-profile-modal" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="flex items-center space-x-4 mb-6">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 flex items-center justify-center text-white text-2xl font-bold">CG</div>
+          <div>
+            <h4 class="font-medium">CareerGenius User</h4>
+            <p class="text-sm text-gray-500">Free Plan</p>
+          </div>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="p-3 bg-gray-50 rounded-lg">
+            <h4 class="font-medium text-sm mb-1">Email</h4>
+            <p class="text-gray-600">user@example.com</p>
+          </div>
+          
+          <div class="p-3 bg-gray-50 rounded-lg">
+            <h4 class="font-medium text-sm mb-1">Account Type</h4>
+            <p class="text-gray-600">Free Plan</p>
+            <button class="text-blue-600 text-sm mt-1 hover:text-blue-800">Upgrade</button>
+          </div>
+          
+          <button class="w-full p-3 text-left hover:bg-gray-50 rounded-lg flex items-center justify-between">
+            <span>Settings</span>
+            <i class="fas fa-chevron-right text-gray-400"></i>
+          </button>
+          
+          <button class="w-full p-3 text-left hover:bg-gray-50 rounded-lg flex items-center justify-between">
+            <span>Help & FAQ</span>
+            <i class="fas fa-chevron-right text-gray-400"></i>
+          </button>
+          
+          <button class="w-full p-3 text-left text-red-500 hover:bg-red-50 rounded-lg">
+            Log Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const menuBtn = document.getElementById('menu-btn');
+    const newChatBtn = document.getElementById('new-chat-btn');
+    const chatContainer = document.getElementById('chat-container');
+    const welcomeMessage = document.getElementById('welcome-message');
+    const chatForm = document.getElementById('chat-form');
+    const userInput = document.getElementById('user-input');
+    const voiceBtn = document.getElementById('voice-btn');
+    const attachBtn = document.getElementById('attach-btn');
+    const fileInput = document.getElementById('file-input');
+    const filePreviewContainer = document.getElementById('file-preview-container');
+    const sendBtn = document.getElementById('send-btn');
+    const chatHistory = document.getElementById('chat-history');
+    const profileBtn = document.getElementById('profile-btn');
+    const profileModal = document.getElementById('profile-modal');
+    const closeProfileModal = document.getElementById('close-profile-modal');
+    
+    // State
+    let currentChatId = generateChatId();
+    let chats = JSON.parse(localStorage.getItem('careerGeniusChats')) || {};
+    let isProcessing = false;
+    let filesToUpload = [];
+    
+    // Initialize
+    loadChatHistory();
+    
+    // Event Listeners
+    menuBtn.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', toggleSidebar);
+    newChatBtn.addEventListener('click', startNewChat);
+    chatForm.addEventListener('submit', handleChatSubmit);
+    voiceBtn.addEventListener('click', handleVoiceInput);
+    attachBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', handleFileSelect);
+    profileBtn.addEventListener('click', () => profileModal.classList.remove('hidden'));
+    closeProfileModal.addEventListener('click', () => profileModal.classList.add('hidden'));
+    
+    // Functions
+    function generateChatId() {
+      return 'chat-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    }
+    
+    function toggleSidebar() {
+      sidebar.classList.toggle('sidebar-hidden');
+      sidebarOverlay.classList.toggle('hidden');
+    }
+    
+    function startNewChat() {
+      currentChatId = generateChatId();
+      chatContainer.innerHTML = '';
+      welcomeMessage.classList.remove('hidden');
+      chatContainer.classList.add('hidden');
+      userInput.value = '';
+      filesToUpload = [];
+      filePreviewContainer.classList.add('hidden');
+      filePreviewContainer.innerHTML = '';
+    }
+    
+    function loadChatHistory() {
+      chatHistory.innerHTML = '';
+      
+      if (Object.keys(chats).length === 0) {
+        chatHistory.innerHTML = '<p class="px-4 py-2 text-gray-500 text-sm">No chat history</p>';
+        return;
+      }
+      
+      Object.entries(chats).forEach(([id, chat]) => {
+        const chatElement = document.createElement('div');
+        chatElement.className = `px-4 py-2 cursor-pointer hover:bg-gray-50 rounded-lg flex items-center justify-between ${id === currentChatId ? 'bg-blue-50' : ''}`;
+        chatElement.innerHTML = `
+          <div class="flex items-center space-x-3 truncate">
+            <i class="fas fa-comment text-gray-400"></i>
+            <span class="truncate">${chat.title || 'New Chat'}</span>
+          </div>
+          <i class="fas fa-trash-alt text-gray-400 hover:text-red-500" data-chat-id="${id}"></i>
+        `;
+        
+        chatElement.addEventListener('click', () => loadChat(id));
+        chatHistory.appendChild(chatElement);
+      });
+      
+      // Add event listeners to delete buttons
+      document.querySelectorAll('.fa-trash-alt').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteChat(btn.dataset.chatId);
+        });
+      });
+    }
+    
+    function loadChat(chatId) {
+      currentChatId = chatId;
+      const chat = chats[chatId];
+      
+      chatContainer.innerHTML = '';
+      chat.messages.forEach(msg => {
+        addMessage(msg.role, msg.content, false, msg.files);
+      });
+      
+      welcomeMessage.classList.add('hidden');
+      chatContainer.classList.remove('hidden');
+      toggleSidebar();
+      loadChatHistory();
+    }
+    
+    function deleteChat(chatId) {
+      delete chats[chatId];
+      localStorage.setItem('careerGeniusChats', JSON.stringify(chats));
+      
+      if (currentChatId === chatId) {
+        startNewChat();
+      } else {
+        loadChatHistory();
+      }
+    }
+    
+    function saveChat(message, response, files = []) {
+      if (!chats[currentChatId]) {
+        chats[currentChatId] = {
+          title: message.length > 30 ? message.substring(0, 30) + '...' : message,
+          messages: [],
+          createdAt: new Date().toISOString()
+        };
+      }
+      
+      chats[currentChatId].messages.push({
+        role: 'user',
+        content: message,
+        files: files,
+        timestamp: new Date().toISOString()
+      });
+      
+      if (response) {
+        chats[currentChatId].messages.push({
+          role: 'assistant',
+          content: response,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      localStorage.setItem('careerGeniusChats', JSON.stringify(chats));
+      loadChatHistory();
+    }
+    
+    function handleFileSelect(e) {
+      filesToUpload = Array.from(e.target.files);
+      filePreviewContainer.innerHTML = '';
+      
+      if (filesToUpload.length > 0) {
+        filePreviewContainer.classList.remove('hidden');
+        
+        filesToUpload.forEach((file, index) => {
+          const previewDiv = document.createElement('div');
+          previewDiv.className = 'relative border rounded-lg p-2 bg-white';
+          
+          if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              previewDiv.innerHTML = `
+                <img src="${e.target.result}" class="file-preview" alt="Preview">
+                <button class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center" data-index="${index}">
+                  <i class="fas fa-times text-xs"></i>
+                </button>
+              `;
+            };
+            reader.readAsDataURL(file);
+          } else {
+            previewDiv.innerHTML = `
+              <div class="flex items-center space-x-2">
+                <i class="fas fa-file text-gray-500"></i>
+                <span class="text-sm truncate" style="max-width: 150px;">${file.name}</span>
+              </div>
+              <button class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center" data-index="${index}">
+                <i class="fas fa-times text-xs"></i>
+              </button>
+            `;
+          }
+          
+          filePreviewContainer.appendChild(previewDiv);
+        });
+        
+        // Add event listeners to remove buttons
+        document.querySelectorAll('#file-preview-container button').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const index = parseInt(btn.dataset.index);
+            filesToUpload.splice(index, 1);
+            fileInput.value = '';
+            handleFileSelect({ target: { files: filesToUpload } });
+          });
+        });
+      } else {
+        filePreviewContainer.classList.add('hidden');
+      }
+    }
+    
+    function handleVoiceInput() {
+      if (!('webkitSpeechRecognition' in window)) {
+        addMessage('bot', "Voice input is not supported in your browser. Please try Chrome or Edge.");
+        return;
+      }
+      
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      
+      recognition.onstart = () => {
+        voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+        voiceBtn.classList.add('text-red-500');
+        addMessage('bot', "Listening... Please ask your career question.");
+      };
+      
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        userInput.value = transcript;
+      };
+      
+      recognition.onerror = (event) => {
+        addMessage('bot', "Sorry, I didn't catch that. Please try typing your question.");
+      };
+      
+      recognition.onend = () => {
+        voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+        voiceBtn.classList.remove('text-red-500');
+      };
+      
+      recognition.start();
+    }
+    
+    async function handleChatSubmit(e) {
+      e.preventDefault();
+      if (isProcessing) return;
+      
+      const message = userInput.value.trim();
+      if (!message && filesToUpload.length === 0) return;
+      
+      // Show chat container if it's hidden (first message)
+      if (welcomeMessage.classList.contains('hidden') === false) {
+        welcomeMessage.classList.add('hidden');
+        chatContainer.classList.remove('hidden');
+      }
+      
+      // Add user message
+      addMessage('user', message, false, filesToUpload);
+      isProcessing = true;
+      userInput.value = '';
+      sendBtn.disabled = true;
+      
+      // Save chat immediately with user message
+      saveChat(message, null, filesToUpload);
+      
+      // Add typing indicator
+      const typingIndicator = addMessage('bot', '', true);
+      
+      // Simulate AI processing delay
+      setTimeout(() => {
+        typingIndicator.remove();
+        
+        // Generate response
+        const response = generateAIResponse(message);
+        addMessage('bot', response);
+        
+        // Update chat with AI response
+        saveChat(message, response, filesToUpload);
+        
+        isProcessing = false;
+        sendBtn.disabled = false;
+        filesToUpload = [];
+        filePreviewContainer.classList.add('hidden');
+        filePreviewContainer.innerHTML = '';
+        fileInput.value = '';
+      }, 1500);
+    }
+    
+    function addMessage(sender, text, isTyping = false, files = []) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+      
+      const bubbleDiv = document.createElement('div');
+      bubbleDiv.className = `max-w-[85%] rounded-lg p-4 ${
+        sender === 'user' 
+          ? 'bg-blue-600 text-white rounded-br-none' 
+          : 'bg-gray-100 text-gray-800 rounded-bl-none markdown-style'
+      }`;
+      
+      if (isTyping) {
+        bubbleDiv.innerHTML = '<div class="typing-indicator">Thinking</div>';
+      } else {
+        bubbleDiv.innerHTML = formatResponse(text);
+        
+        // Add file previews if any
+        if (files && files.length > 0) {
+          const filesContainer = document.createElement('div');
+          filesContainer.className = 'mt-3 space-y-2';
+          
+          files.forEach(file => {
+            if (file.type.startsWith('image/')) {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'file-preview max-w-xs rounded border';
+                filesContainer.appendChild(img);
+              };
+              reader.readAsDataURL(file);
+            } else {
+              const fileDiv = document.createElement('div');
+              fileDiv.className = 'flex items-center space-x-2 p-2 bg-white bg-opacity-20 rounded';
+              fileDiv.innerHTML = `
+                <i class="fas fa-file text-gray-300"></i>
+                <span class="text-sm">${file.name}</span>
+              `;
+              filesContainer.appendChild(fileDiv);
+            }
+          });
+          
+          bubbleDiv.appendChild(filesContainer);
+        }
+      }
+      
+      messageDiv.appendChild(bubbleDiv);
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+      
+      return messageDiv;
+    }
+    
+    function formatResponse(text) {
+      if (!text) return '';
+      
+      // Convert markdown-style formatting to HTML
+      return text
+        .replace(/### (.*?)\n/g, '<h3 class="font-bold text-lg mt-4 mb-2">$1</h3>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/- (.*?)\n/g, '<li>$1</li>')
+        .replace(/\n/g, '<br>');
+    }
+    
+    // Enhanced career knowledge base with markdown-style responses
+    function generateAIResponse(question) {
+      const lowerQuestion = question.toLowerCase();
+      
+      // Career options
+      if (/career options|what career|which job/i.test(lowerQuestion)) {
+        return `### Exploring Career Options\n\nHere are some major career fields to consider:\n\n**Technology:**\n- Software Developer 💻\n- Data Scientist 📊\n- Cybersecurity Analyst 🔒\n- UX/UI Designer 🎨\n\n**Healthcare:**\n- Registered Nurse 🏥\n- Physician 👨‍⚕️\n- Physical Therapist 💪\n- Medical Technologist 🔬\n\n**Business:**\n- Marketing Manager 📈\n- Financial Analyst 💰\n- Human Resources Specialist 👥\n- Management Consultant 🏢\n\n*Which field interests you most? I can provide more specific guidance.*`;
+      }
+      
+      // Education
+      if (/education|degree|certification|qualification/i.test(lowerQuestion)) {
+        return `### Education Pathways\n\nEducation requirements vary significantly:\n\n1. **Tech Careers:**\n   - Many require bachelor's in CS or related field\n   - Bootcamps/certifications can supplement (e.g., AWS, Google certs)\n   - Continuous learning is essential\n\n2. **Healthcare:**\n   - Strict licensing requirements\n   - Clinical hours often required\n   - Specialized graduate programs for advanced roles\n\n3. **Business:**\n   - MBAs valuable but not always required\n   - Professional certifications (PMP, CFA) help advancement\n\n4. **Creative Fields:**\n   - Strong portfolios often outweigh degrees\n   - Freelance experience valuable\n\n*Tell me about a specific career for tailored advice.*`;
+      }
+      
+      // Resume
+      if (/resume|CV|curriculum vitae/i.test(lowerQuestion)) {
+        return `### Resume Writing Guide\n\n**Key Recommendations:**\n1. **Tailor for Each Job** - Match keywords from job description\n2. **Quantify Achievements** - "Increased sales by 30%" vs. "Improved sales"\n3. **Strong Action Verbs** - Led, Developed, Implemented, Optimized\n4. **Clean Formatting** - Consistent fonts, ample white space\n5. **Technical Skills Section** - Especially for STEM fields\n\n**Sections to Include:**\n- Contact Info\n- Professional Summary (2-3 lines)\n- Work Experience (reverse chronological)\n- Education\n- Skills (technical & soft skills)\n- Optional: Certifications, Projects, Volunteer Work\n\n*Need help with a specific resume section?*`;
+      }
+      
+      // Interview
+      if (/interview|hiring process|job interview/i.test(lowerQuestion)) {
+        return `### Interview Success Strategies\n\n**Before the Interview:**\n- Research the company (mission, recent news, competitors)\n- Review the job description thoroughly\n- Prepare 3-5 accomplishment stories using STAR method\n\n**Common Questions to Prepare:**\n1. "Tell me about yourself" (90-second professional summary)\n2. "Why do you want this job?"\n3. "Describe a challenge you faced and how you overcame it"\n4. "Where do you see yourself in 5 years?"\n\n**Virtual Interview Tips:**\n- Test technology beforehand\n- Neutral background, professional lighting\n- Maintain eye contact with camera\n\n*Want to practice a specific interview question?*`;
+      }
+      
+      // Career change
+      if (/career change|switch career|transition|new field/i.test(lowerQuestion)) {
+        return `### Changing Careers Successfully\n\n**Step-by-Step Approach:**\n1. **Self-Assessment**\n   - Identify transferable skills\n   - Consider values and work preferences\n\n2. **Research**\n   - Growth industries (renewable energy, AI, healthcare)\n   - Salary expectations\n   - Education requirements\n\n3. **Skill Building**\n   - Online courses (Coursera, edX)\n   - Volunteer for relevant projects\n   - Freelance work to gain experience\n\n4. **Networking**\n   - LinkedIn connections\n   - Informational interviews\n   - Professional associations\n\n*What field are you transitioning from/to?*`;
+      }
+      
+      // Salary
+      if (/salary|pay|compensation|earn|income/i.test(lowerQuestion)) {
+        return `### Salary Negotiation Guide\n\n**Preparation:**\n- Research market rates (Glassdoor, Payscale)\n- Know your minimum acceptable salary\n- Consider total compensation (bonuses, benefits, equity)\n\n**During Negotiation:**\n1. Let employer make first offer when possible\n2. Use range ("I was expecting $X-$Y based on my research")\n3. Highlight unique value you bring\n4. Be prepared to negotiate non-salary items (remote days, vacation time)\n\n**Phrases to Use:**\n- "I'm excited about this opportunity and based on my research..."\n- "Could we discuss the compensation structure?"\n- "I was hoping for something closer to X, is that possible?"\n\n*Need help with a specific offer?*`;
+      }
+      
+      // Job search
+      if (/job search|find work|looking for job/i.test(lowerQuestion)) {
+        return `### Effective Job Search Strategies\n\n1. **Optimize Your Online Presence**\n   - Polish LinkedIn profile with keywords\n   - Clean up social media\n\n2. **Leverage Your Network**\n   - Inform contacts you're looking\n   - Attend industry events\n\n3. **Diversify Your Approach**\n   - Company websites (not just job boards)\n   - Recruitment agencies\n   - Professional associations\n\n4. **Follow Up**\n   - After applications\n   - After interviews\n\n5. **Stay Organized**\n   - Track applications\n   - Set weekly goals\n\n*What industry are you targeting?*`;
+      }
+      
+      // Default response
+      return `### Career Guidance\n\nI specialize in helping with:\n\n- Career exploration and planning\n- Education and training options\n- Job search strategies\n- Professional development\n- Workplace challenges\n\n*Could you please share more details about your specific situation?*`;
+    }
+  </script>
+</body>
+</html>

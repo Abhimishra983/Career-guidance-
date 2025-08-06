@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Career Guide - Services</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+   <script src="https://kit.fontawesome.com/a2a93b7abc.js" crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="bg-white text-gray-800">
+
+  <header class="bg-gradient-to-r from-yellow-200 via-yellow-100 to-pink-200 shadow-md py-4 px-6 sticky top-0 z-50">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+    <!-- Left: Logo -->
+    <div class="flex items-center justify-center md:justify-start">
+      <img src="/static/images/logo.jpg" alt="Logo" class="h-12 w-auto">
+    </div>
+    <!-- Center: Heading -->
+    <div class="text-center">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-purple-800 tracking-wide">
+        VISION TO AIGUIDE
+      </h1>
+      <!-- Nav Below Heading (centered) -->
+      <nav class="flex flex-wrap justify-center gap-4 mt-2 text-sm font-medium text-gray-700">
+        <a href="/" class="hover:text-blue-600">Home</a>
+        <a href="/" class="hover:text-blue-600">Shop</a>
+        <a href="/" class="hover:text-blue-600">Mock test</a>
+        <a href="/" class="hover:text-blue-600">Built resume</a>
+        <a href="/services" class="hover:text-blue-600">Services</a>
+        <a href="/" class="hover:text-blue-600">Help</a>
+        <a href="/" class="hover:text-blue-600">Appointment</a>
+        <a href="/" class="hover:text-blue-600">Contact</a>
+        <a href="/" class="hover:text-blue-600">Library</a>
+      </nav>
+    </div>
+    <!-- Right: Search and User -->
+    <div class="flex items-center justify-center md:justify-end space-x-4">
+      <!-- Search Bar -->
+      <div class="relative">
+        <input type="text" placeholder="Search..." class="rounded-full border border-gray-300 px-4 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <i class="fas fa-search absolute right-3 top-2 text-gray-500 text-sm"></i>
+      </div>
+     <div class="relative">
+  <button id="userIconBtn" class="text-xl text-gray-700 hover:text-blue-600 focus:outline-none">
+    <i class="fas fa-user-circle text-2xl"></i>
+  </button>
+
+ <!-- User Dropdown -->
+<div id="userDropdown" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-lg z-50 p-4 dark:bg-gray-800 dark:text-white">
+  {% if logged_in %}
+  <!-- After Login View -->
+  <div class="flex items-center space-x-3 mb-4">
+    <img src="{{ url_for('static', filename='images/user.png') }}" alt="User Avatar"
+         class="w-10 h-10 rounded-full border border-gray-300 shadow-md">
+    <div class="text-sm font-medium">{{ username }}</div>
+  </div>
+
+  <a href="/edit_profile" class="block text-center bg-gray-100 text-gray-800 py-2 rounded hover:bg-gray-200 text-sm mb-2 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white">
+    ✏️ Edit Profile
+  </a>
+
+  <ul class="py-1 text-sm">
+    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">🧰 Console</a></li>
+    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">⚙️ User Settings</a></li>
+    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">👤 User Profile</a></li>
+    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">⭐ Favorite APIs</a></li>
+    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">💳 Billing</a></li>
+    <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">💸 Payouts</a></li>
+  </ul>
+
+  <div class="flex items-center justify-between mt-4">
+    <span class="text-xs text-gray-600 dark:text-gray-300">🌙 Day/Night Mode</span>
+    <label class="inline-flex items-center cursor-pointer">
+      <input type="checkbox" class="themeToggle sr-only">
+      <div class="w-10 h-5 bg-gray-300 rounded-full relative transition">
+        <div class="dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-transform"></div>
+      </div>
+    </label>
+  </div>
+
+  {% else %}
+  <!-- Before Login View -->
+  <div class="flex flex-col items-center space-y-3">
+    <img src="{{ url_for('static', filename='images/user.png') }}" alt="User"
+         class="w-16 h-16 rounded-full object-cover border border-gray-300 shadow-md">
+    
+    <a href="/register" class="w-full text-center bg-blue-500 text-white py-2 rounded hover:bg-blue-600 text-sm">
+      🚀 Register to get benefits
+    </a>
+
+    <ul class="w-full py-2 text-sm text-gray-700 dark:text-gray-300">
+      <li><a href="#" class="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700">🧰 Console</a></li>
+      <li><a href="#" class="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700">⚙️ User Settings</a></li>
+      <li><a href="#" class="block px-4 py-2 hover:bg-blue-100 dark:hover:bg-gray-700">👤 User Profile</a></li>
+    </ul>
+
+    <div class="flex items-center justify-between mt-2 w-full">
+      <span class="text-xs text-gray-600 dark:text-gray-300">🌙 Day/Night Mode</span>
+      <label class="inline-flex items-center cursor-pointer">
+        <input type="checkbox" class="themeToggle sr-only">
+        <div class="w-10 h-5 bg-gray-300 rounded-full relative transition">
+          <div class="dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-transform"></div>
+        </div>
+      </label>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+</header>
+  <!-- Hero Section -->
+  <section class="flex flex-col md:flex-row items-center justify-between px-8 py-16 bg-gray-50">
+    <div class="max-w-xl space-y-6">
+      <h1 class="text-4xl md:text-5xl font-bold">Advance Your Career with Degree Programs from Top Universities</h1>
+      <p class="text-lg text-gray-600">
+        Master in-demand skills, learn from top faculty, get live mentorship, and build your portfolio with hands-on projects.
+      </p>
+      <button class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Explore Programs</button>
+    </div>
+    <div class="relative mt-10 md:mt-0">
+      <img src="/static/images/exgd.jpg" alt="Graduate" class="w-full max-w-md rounded-lg shadow-lg">
+    </div>
+  </section>
+
+  <!-- Free Courses Section -->
+  <section class="px-4 py-10">
+    <h2 class="text-3xl font-bold mb-4">Industry-Relevant Free Courses</h2>
+    <p class="mb-6 text-gray-600">Explore our free online courses, designed by industry experts to boost your skills and advance career growth.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="border rounded-lg overflow-hidden shadow hover:shadow-md transition">
+        <img src="/static/images/c.jpg" alt="C for Beginners">
+        <div class="p-4">
+          <h3 class="font-semibold text-lg">C for Beginners</h3>
+          <p class="text-sm text-gray-500">2 hrs • 1.9L+ learners</p>
+          <a href="#" class="text-blue-600 font-semibold mt-2 inline-block">View Course</a>
+        </div>
+      </div>
+      <div class="border rounded-lg overflow-hidden shadow hover:shadow-md transition">
+        <img src="/static/images/excel.jpg" alt="Excel for Beginners">
+        <div class="p-4">
+          <h3 class="font-semibold text-lg">Excel for Beginners</h3>
+          <p class="text-sm text-gray-500">5 hrs • 14.2L+ learners</p>
+          <a href="#" class="text-blue-600 font-semibold mt-2 inline-block">View Course</a>
+        </div>
+      </div>
+      <div class="border rounded-lg overflow-hidden shadow hover:shadow-md transition">
+        <img src="/static/images/powerbi.jpg" alt="Power BI">
+        <div class="p-4">
+          <h3 class="font-semibold text-lg">Data Visualization with Power BI</h3>
+          <p class="text-sm text-gray-500">1.5 hrs • 3.1L+ learners</p>
+          <a href="#" class="text-blue-600 font-semibold mt-2 inline-block">View Course</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pro Courses Tabs -->
+  <section class="px-8 py-16 bg-gray-50">
+    <h2 class="text-3xl font-bold mb-2">Become a Skilled Professional with Pro Courses</h2>
+    <p class="mb-6 text-gray-600">Gain industry-ready skills with certificate courses, hands-on projects, expert guidance, and AI tools.</p>
+
+    <div class="flex space-x-4 border-b pb-2 mb-6">
+      <button onclick="switchTab('popular')" class="tab-btn text-blue-600 font-semibold border-b-2 border-blue-600">Popular</button>
+      <button onclick="switchTab('microsoft')" class="tab-btn text-gray-600 hover:text-blue-600">Microsoft Courses</button>
+      <button onclick="switchTab('data')" class="tab-btn text-gray-600 hover:text-blue-600">Data Science & ML</button>
+      <button onclick="switchTab('ai')" class="tab-btn text-gray-600 hover:text-blue-600">AI & Generative AI</button>
+    </div>
+
+    <div id="tab-content" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <!-- Default Tab Content (Popular) -->
+      <div class="course-card">
+        <img src="/static/images/py.jpeg" class="rounded-t-md" alt="Python">
+        <div class="p-4">
+          <h3 class="font-semibold">Master Python Programming</h3>
+          <p class="text-sm text-gray-500">11.5 hrs • 3 projects</p>
+          <a href="#" class="text-blue-600 font-semibold mt-2 inline-block">View Course</a>
+        </div>
+      </div>
+      <div class="course-card">
+        <img src="/static/images/excel.jpg" class="rounded-t-md" alt="Excel">
+        <div class="p-4">
+          <h3 class="font-semibold">Master Data Analytics in Excel</h3>
+          <p class="text-sm text-gray-500">5.5 hrs • 2 projects</p>
+          <a href="#" class="text-blue-600 font-semibold mt-2 inline-block">View Course</a>
+        </div>
+      </div>
+      <div class="course-card">
+        <img src="/static/images/gpt.jpg" class="rounded-t-md" alt="ChatGPT">
+        <div class="p-4">
+          <h3 class="font-semibold">ChatGPT for Working Professionals</h3>
+          <p class="text-sm text-gray-500">12 hrs • 2 projects</p>
+          <a href="#" class="text-blue-600 font-semibold mt-2 inline-block">View Course</a>
+        </div>
+      </div>
+      <div class="course-card">
+        <img src="/static/images/powerbi.jpg" class="rounded-t-md" alt="Power BI">
+        <div class="p-4">
+          <h3 class="font-semibold">Data Visualization with Power BI</h3>
+          <p class="text-sm text-gray-500">7.5 hrs • 1 project</p>
+          <a href="#" class="text-blue-600 font-semibold mt-2 inline-block">View Course</a>
+        </div>
+      </div>
+    </div>
+  </section>
+<!-- Footer Section -->
+<footer class="bg-gray-900 text-white py-12 mt-10">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-4 gap-6 px-6 text-sm">
+    <!-- Logo + About -->
+    <div>
+      <div class="flex items-center space-x-2 mb-2">
+        <img src="/static/images/logo.jpg" alt="Logo" class="w-8 h-8">
+        <span class="font-bold text-lg">CareerGenius</span>
+      </div>
+      <p class="text-gray-300">
+        Empowering individuals to discover, prepare, and achieve their dream careers through smart tools, guidance, and insights.
+      </p>
+    </div>
+    <!-- Quick Links -->
+    <div>
+      <h4 class="font-semibold text-white mb-3">Quick Links</h4>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:underline text-gray-300">Home</a></li>
+        <li><a href="#" class="hover:underline text-gray-300">About</a></li>
+        <li><a href="#" class="hover:underline text-gray-300">Services</a></li>
+        <li><a href="#" class="hover:underline text-gray-300">Contact</a></li>
+      </ul>
+    </div>
+    <!-- Contact Info -->
+    <div>
+      <h4 class="font-semibold text-white mb-3">Contact</h4>
+      <p class="text-gray-300 mb-1">📧 support@careergenius.com</p>
+      <p class="text-gray-300 mb-3">📍 New Delhi, India</p>
+      <div class="flex space-x-4 text-xl">
+        <a href="#" class="hover:text-blue-400"><i class="fab fa-linkedin"></i></a>
+        <a href="#" class="hover:text-blue-400"><i class="fab fa-github"></i></a>
+        <a href="#" class="hover:text-blue-400"><i class="fas fa-envelope"></i></a>
+      </div>
+    </div>
+    <!-- Newsletter -->
+    <div>
+      <h4 class="font-semibold text-white mb-3">Newsletter</h4>
+      <p class="text-gray-300 mb-3">Subscribe to get updates and career tips.</p>
+      <div class="flex bg-white rounded-full overflow-hidden">
+        <input type="email" placeholder="Your email" class="px-4 py-2 w-full text-gray-800 focus:outline-none">
+        <button class="bg-blue-600 px-4 text-white hover:bg-blue-700"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="mt-6 text-sm text-gray-400 text-center border-t border-gray-600 pt-4">
+      © 2025 CareerGenius · Built with ❤️ by YourTeam
+    </div>
+</footer>
+  <script>
+    const userBtn = document.getElementById("userIconBtn");
+const dropdown = document.getElementById("userDropdown");
+
+userBtn.addEventListener("click", (e) => {
+  e.stopPropagation(); // Prevents document click from firing
+  dropdown.classList.toggle("hidden");
+});
+// Close dropdown if clicked outside
+document.addEventListener("click", function (e) {
+  if (!dropdown.contains(e.target) && !userBtn.contains(e.target)) {
+    dropdown.classList.add("hidden");
+  }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const toggles = document.querySelectorAll(".themeToggle");
+  const html = document.documentElement;
+
+  // Load saved theme
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    html.classList.add("dark");
+    toggles.forEach(toggle => (toggle.checked = true));
+  } else {
+    html.classList.remove("dark");
+    toggles.forEach(toggle => (toggle.checked = false));
+  }
+
+  // Toggle all switches
+  toggles.forEach(toggle => {
+    toggle.addEventListener("change", function () {
+      if (this.checked) {
+        html.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        html.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
+
+      // Sync all toggles
+      toggles.forEach(t => (t.checked = this.checked));
+    });
+  });
+});
+    function switchTab(tab) {
+      const allBtns = document.querySelectorAll('.tab-btn');
+      allBtns.forEach(btn => btn.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600'));
+      event.target.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+
+      // Add dynamic tab-switching content load logic here if needed
+    }
+  </script>
+
+</body>
+</html>

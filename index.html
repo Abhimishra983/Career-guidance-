@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CareerGenius - Modern</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a2a93b7abc.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+      --primary: #7c3aed;
+      --secondary: #f59e0b;
+      --accent: #ec4899;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+      transform: translateY(0);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .nav-link {
+      position: relative;
+    }
+    
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover:after {
+      width: 100%;
+    }
+    
+    .floating {
+      animation: floating 6s ease-in-out infinite;
+    }
+    
+    @keyframes floating {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    .wave-shape {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+    }
+    
+    .wave-shape svg {
+      position: relative;
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 150px;
+    }
+    
+    .wave-shape .shape-fill {
+      fill: #FFFFFF;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+  <!-- Header Section -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-900/80 shadow-sm">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <div class="flex items-center space-x-2">
+          <img src="/static/images/logo.jpg" alt="Logo" class="h-10 w-auto rounded-lg">
+          <span class="text-xl font-bold gradient-text">VISION TO AIGUIDE</span>
+        </div>
+        
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center space-x-8">
+          <a href="/" class="nav-link text-sm font-medium">Home</a>
+          <a href="/shop" class="nav-link text-sm font-medium">Shop</a>
+          <a href="/interview" class="nav-link text-sm font-medium">Mock test</a>
+          <a href="/resume" class="nav-link text-sm font-medium">Built resume</a>
+          <a href="/library" class="nav-link text-sm font-medium">Library</a>
+          <a href="/services" class="nav-link text-sm font-medium">Services</a>
+          <a href="/aboutus" class="nav-link text-sm font-medium">About us</a>
+          <a href="/appointment" class="nav-link text-sm font-medium">Appointment</a>
+          <a href="/contact" class="nav-link text-sm font-medium">Contact</a>
+        </nav>
+        
+        <!-- Right Side Actions -->
+        <div class="flex items-center space-x-4">
+          <!-- Search -->
+          <div class="relative hidden md:block">
+            <input type="text" id="desktopSearch" placeholder="Search..." 
+                   class="pl-4 pr-10 py-2 rounded-full border border-gray-200 dark:border-gray-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-40 lg:w-56 transition-all duration-300">
+            <i class="fas fa-search absolute right-3 top-2.5 text-gray-400 text-sm"></i>
+          </div>
+          
+          <!-- User Dropdown -->
+          <div class="relative">
+            <button id="userIconBtn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              <i class="fas fa-user-circle text-xl text-gray-600 dark:text-gray-300"></i>
+            </button>
+
+            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-xl z-50 overflow-hidden border border-gray-100 dark:border-gray-700 animate__animated animate__fadeIn">
+              {% if 'user_email' in session %}
+              <!-- After Login View -->
+              <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center space-x-3">
+                  <img src="{{ url_for('static', filename='images/user.png') }}" alt="User Avatar"
+                       class="w-10 h-10 rounded-full border-2 border-blue-500 shadow-sm object-cover">
+                  <div>
+                    <div class="font-medium text-gray-900 dark:text-white">{{ session['user_name'] }}</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">{{ session['user_email'] }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-2">
+                <a href="/profile" class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  <i class="fas fa-user mr-2 text-gray-500"></i> My Profile
+                </a>
+                <a href="/settings" class="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  <i class="fas fa-cog mr-2 text-gray-500"></i> Settings
+                </a>
+              </div>
+
+              <div class="p-3 border-t border-gray-200 dark:border-gray-700">
+                <a href="/logout" class="block w-full text-center bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-300 py-2 rounded-md hover:bg-red-100 dark:hover:bg-red-900/30 text-sm font-medium transition-colors">
+                  Sign Out
+                </a>
+              </div>
+
+              {% else %}
+              <!-- Before Login View -->
+              <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex flex-col items-center">
+                  <img src="{{ url_for('static', filename='images/user.png') }}" alt="User"
+                       class="w-16 h-16 rounded-full border-2 border-blue-500 shadow-sm object-cover mb-3">
+                  <h3 class="text-lg font-medium text-gray-900 dark:text-white">Welcome Guest</h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 text-center mt-1">Sign in to access all features</p>
+                </div>
+              </div>
+
+              <div class="p-3 space-y-3">
+                <a href="/register" class="block w-full text-center gradient-bg text-white py-2 rounded-md hover:opacity-90 text-sm font-medium transition-all">
+                  Create Account
+                </a>
+                <a href="/register" class="block w-full text-center border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium transition-colors">
+                  Sign In
+                </a>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          
+          <!-- Mobile Menu Button -->
+          <button id="mobileMenuButton" class="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+            <i class="fas fa-bars text-xl text-gray-600 dark:text-gray-300"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu -->
+      <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex flex-col space-y-3 mt-3">
+          <a href="/" class="nav-link text-sm font-medium">Home</a>
+          <a href="/shop" class="nav-link text-sm font-medium">Shop</a>
+          <a href="/interview" class="nav-link text-sm font-medium">Mock test</a>
+          <a href="/resume" class="nav-link text-sm font-medium">Built resume</a>
+          <a href="/library" class="nav-link text-sm font-medium">Library</a>
+          <a href="/services" class="nav-link text-sm font-medium">Services</a>
+          <a href="/aboutus" class="nav-link text-sm font-medium">About us</a>
+          <a href="/appointment" class="nav-link text-sm font-medium">Appointment</a>
+          <a href="/contact" class="nav-link text-sm font-medium">Contact</a>
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div class="relative">
+            <input type="text" id="mobileSearch" placeholder="Search..." 
+                   class="w-full pl-4 pr-10 py-2 rounded-full border border-gray-200 dark:border-gray-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            <i class="fas fa-search absolute right-3 top-2.5 text-gray-400 text-sm"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 -rotate-1 transform scale-125"></div>
+  <div class="container mx-auto px-4 py-24 relative z-10">
+    <div class="flex flex-col lg:flex-row items-center">
+      <div class="lg:w-1/2 mb-12 lg:mb-0 animate__animated animate__fadeInLeft">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+          Unlock Your <span class="gradient-text">Potential</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-lg">
+          A transformative force in career guidance, offering innovative strategies and personalized support to help you thrive in your professional journey.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="#" class="gradient-bg text-white px-8 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+            Discover Your Life Path
+          </a>
+          <a href="/testselect" class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-8 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border border-gray-200 dark:border-gray-700">
+            Get Test
+          </a>
+        </div>
+      </div>
+      
+      <!-- Image Slider -->
+      <div class="lg:w-1/2 flex justify-center animate__animated animate__fadeInRight">
+        <div class="relative w-full max-w-md rounded-xl shadow-2xl overflow-hidden">
+          <div class="slider-container relative h-80 w-full">
+            <!-- Slide 1 -->
+            <div class="slide absolute inset-0 w-full h-full transition-opacity duration-1000 opacity-100">
+              <img src="/static/images/slider1.jpg" alt="Career Guidance" class="w-full h-full object-cover">
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                <div class="text-white">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-sm font-medium">Career Assessment</span>
+                    <span class="text-xs">1/4</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-1.5">
+                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 25%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Slide 2 -->
+            <div class="slide absolute inset-0 w-full h-full transition-opacity duration-1000 opacity-0">
+              <img src="/static/images/slider2.jpg" alt="Interview Preparation" class="w-full h-full object-cover">
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                <div class="text-white">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-sm font-medium">Interview Prep</span>
+                    <span class="text-xs">2/4</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-1.5">
+                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 50%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Slide 3 -->
+            <div class="slide absolute inset-0 w-full h-full transition-opacity duration-1000 opacity-0">
+              <img src="/static/images/slider3.jpg" alt="Skill Development" class="w-full h-full object-cover">
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                <div class="text-white">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-sm font-medium">Skill Building</span>
+                    <span class="text-xs">3/4</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-1.5">
+                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 75%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Slide 4 -->
+            <div class="slide absolute inset-0 w-full h-full transition-opacity duration-1000 opacity-0">
+              <img src="/static/images/slider4.jpg" alt="Career Growth" class="w-full h-full object-cover">
+              <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                <div class="text-white">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-sm font-medium">Career Growth</span>
+                    <span class="text-xs">4/4</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-1.5">
+                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 100%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Slider Controls -->
+          <button class="slider-prev absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 text-white p-2 rounded-full hover:bg-white/50 transition">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="slider-next absolute right-4 top-1/2 -translate-y-1/2 bg-white/30 text-white p-2 rounded-full hover:bg-white/50 transition">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wave-shape">
+    <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+    </svg>
+  </div>
+</section>
+  <!-- Career Services Section -->
+  <section class="py-20 bg-white dark:bg-gray-900">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-16 animate__animated animate__fadeIn">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Comprehensive <span class="gradient-text">Career Services</span></h2>
+        <p class="text-gray-600 dark:text-gray-400 text-lg">
+          We offer a range of specialized services designed to help you navigate your career path with confidence and clarity.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 animate__animated animate__fadeInUp">
+        <!-- Card 1 -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md card-hover border border-gray-100 dark:border-gray-700">
+          <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-location-arrow text-purple-600 dark:text-purple-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-center mb-3">Career Assessment</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-center mb-4">
+            Discover your strengths, interests, and ideal career paths through our comprehensive assessment tools.
+          </p>
+          <div class="text-center">
+            <a href="#" class="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium text-sm hover:underline">
+              Learn More <i class="fas fa-arrow-right ml-1 text-xs"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md card-hover border border-gray-100 dark:border-gray-700">
+          <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-user text-blue-600 dark:text-blue-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-center mb-3">Personal Coaching</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-center mb-4">
+            Work one-on-one with our certified career coaches to develop personalized strategies.
+          </p>
+          <div class="text-center">
+            <a href="#" class="inline-flex items-center text-blue-600 dark:text-blue-400 font-medium text-sm hover:underline">
+              Learn More <i class="fas fa-arrow-right ml-1 text-xs"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Card 3 -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md card-hover border border-gray-100 dark:border-gray-700">
+          <div class="w-14 h-14 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-book text-green-600 dark:text-green-400 text-xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-center mb-3">Skill Development</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-center mb-4">
+            Access our curated courses and workshops to build skills for today's job market.
+          </p>
+          <div class="text-center">
+            <a href="#" class="inline-flex items-center text-green-600 dark:text-green-400 font-medium text-sm hover:underline">
+              Learn More <i class="fas fa-arrow-right ml-1 text-xs"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Courses Section -->
+  <section class="py-20 bg-gray-50 dark:bg-gray-900/50">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-16 animate__animated animate__fadeIn">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Featured <span class="gradient-text">Courses</span></h2>
+        <p class="text-gray-600 dark:text-gray-400 text-lg">
+          Learn in-demand skills from industry experts with our comprehensive courses.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 animate__animated animate__fadeInUp">
+        <!-- Course 1 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md card-hover border border-gray-100 dark:border-gray-700">
+          <div class="relative overflow-hidden h-48">
+            <img src="/static/images/wd.jpg" alt="Web Development" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+            <div class="absolute top-3 right-3 bg-purple-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+              Popular
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-medium text-purple-600 dark:text-purple-400">Development</span>
+              <div class="flex items-center text-yellow-400">
+                <i class="fas fa-star text-xs"></i>
+                <span class="text-xs ml-1 text-gray-600 dark:text-gray-400">4.9</span>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Web Development</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+              Learn full-stack web development with hands-on projects and real-world skills.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-medium text-gray-900 dark:text-white">$99.99</span>
+              <a href="#" class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline">
+                Enroll Now <i class="fas fa-arrow-right ml-1 text-xs"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Course 2 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md card-hover border border-gray-100 dark:border-gray-700">
+          <div class="relative overflow-hidden h-48">
+            <img src="/static/images/ds.jpg" alt="Data Science" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Data Science</span>
+              <div class="flex items-center text-yellow-400">
+                <i class="fas fa-star text-xs"></i>
+                <span class="text-xs ml-1 text-gray-600 dark:text-gray-400">4.8</span>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Data Science</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+              Master Python, statistics, and machine learning to become a data expert.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-medium text-gray-900 dark:text-white">$129.99</span>
+              <a href="#" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
+                Enroll Now <i class="fas fa-arrow-right ml-1 text-xs"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Course 3 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md card-hover border border-gray-100 dark:border-gray-700">
+          <div class="relative overflow-hidden h-48">
+            <img src="/static/images/ml.jpg" alt="Machine Learning" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+            <div class="absolute top-3 right-3 bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+              New
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-medium text-pink-600 dark:text-pink-400">AI/ML</span>
+              <div class="flex items-center text-yellow-400">
+                <i class="fas fa-star text-xs"></i>
+                <span class="text-xs ml-1 text-gray-600 dark:text-gray-400">4.7</span>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">AI & Machine Learning</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+              Explore cutting-edge AI tools and build intelligent applications.
+            </p>
+            <div class="flex justify-between items-center">
+              <span class="text-sm font-medium text-gray-900 dark:text-white">$149.99</span>
+              <a href="#" class="text-sm font-medium text-pink-600 dark:text-pink-400 hover:underline">
+                Enroll Now <i class="fas fa-arrow-right ml-1 text-xs"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12 animate__animated animate__fadeIn">
+        <a href="/explore" class="inline-block gradient-bg text-white px-8 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+          View All Courses
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Library Courses Section -->
+  <section class="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-16 animate__animated animate__fadeIn">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">📚 Featured <span class="gradient-text">Library Courses</span></h2>
+        <p class="text-gray-300 text-lg">
+          Boost your knowledge with expertly crafted courses in Library Science, Research, and Digital Management.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 animate__animated animate__fadeInUp">
+        <!-- Course 1 -->
+        <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card-hover border border-gray-700">
+          <div class="relative overflow-hidden h-48">
+            <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80" 
+                 alt="Digital Library" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center mb-3">
+              <span class="bg-purple-900/50 text-purple-300 text-xs px-3 py-1 rounded-full">Beginner</span>
+              <span class="ml-auto text-xs text-gray-400">12 Hours</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">📘 Digital Library Management</h3>
+            <p class="text-gray-300 text-sm mb-4">
+              Learn techniques for organizing and managing digital resources in modern libraries.
+            </p>
+            <a href="#" class="inline-flex items-center text-purple-400 font-medium text-sm hover:underline">
+              Explore Course <i class="fas fa-arrow-right ml-1 text-xs"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Course 2 -->
+        <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card-hover border border-gray-700">
+          <div class="relative overflow-hidden h-48">
+            <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80" 
+                 alt="Information Systems" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center mb-3">
+              <span class="bg-blue-900/50 text-blue-300 text-xs px-3 py-1 rounded-full">Intermediate</span>
+              <span class="ml-auto text-xs text-gray-400">18 Hours</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">💻 Library Information Systems</h3>
+            <p class="text-gray-300 text-sm mb-4">
+              Master the tools and software used to manage library databases and systems.
+            </p>
+            <a href="#" class="inline-flex items-center text-blue-400 font-medium text-sm hover:underline">
+              Explore Course <i class="fas fa-arrow-right ml-1 text-xs"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Course 3 -->
+        <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card-hover border border-gray-700">
+          <div class="relative overflow-hidden h-48">
+            <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80" 
+                 alt="Research & Cataloging" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+          </div>
+          <div class="p-6">
+            <div class="flex items-center mb-3">
+              <span class="bg-green-900/50 text-green-300 text-xs px-3 py-1 rounded-full">Advanced</span>
+              <span class="ml-auto text-xs text-gray-400">24 Hours</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">🧠 Research & Cataloging</h3>
+            <p class="text-gray-300 text-sm mb-4">
+              Develop research techniques and learn cataloging standards for organizing collections.
+            </p>
+            <a href="#" class="inline-flex items-center text-green-400 font-medium text-sm hover:underline">
+              Explore Course <i class="fas fa-arrow-right ml-1 text-xs"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12 animate__animated animate__fadeIn">
+        <a href="/library" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+          View All Library Courses
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="relative py-24 bg-gradient-to-r from-purple-600 to-pink-600 text-white overflow-hidden">
+    <div class="absolute inset-0 opacity-20">
+      <div class="absolute inset-0 bg-[url('/static/images/pattern.png')] bg-repeat opacity-10"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10 text-center animate__animated animate__fadeIn">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Discover Your <span class="gradient-text">True Path</span>?</h2>
+      <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+        Join thousands who have gained clarity and direction through our AI-powered life path analysis.
+      </p>
+      <a href="/jobs" class="inline-block bg-white text-purple-700 font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+        Begin Your Journey Now <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 pt-16 pb-8">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <!-- Column 1 -->
+        <div class="space-y-4">
+          <div class="flex items-center space-x-2">
+            <img src="/static/images/logo.jpg" alt="Logo" class="h-8 w-auto rounded-lg">
+            <span class="font-bold text-white text-lg">CareerGenius</span>
+          </div>
+          <p class="text-sm">
+            Empowering individuals to discover, prepare, and achieve their dream careers through smart tools, guidance, and insights.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Column 2 -->
+        <div class="space-y-4">
+          <h4 class="font-semibold text-white text-lg">Quick Links</h4>
+          <ul class="space-y-2">
+            <li><a href="/" class="text-sm hover:text-white transition-colors">Home</a></li>
+            <li><a href="/aboutus" class="text-sm hover:text-white transition-colors">About</a></li>
+            <li><a href="/services" class="text-sm hover:text-white transition-colors">Services</a></li>
+            <li><a href="/explore" class="text-sm hover:text-white transition-colors">Courses</a></li>
+            <li><a href="/contact" class="text-sm hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        
+        <!-- Column 3 -->
+        <div class="space-y-4">
+          <h4 class="font-semibold text-white text-lg">Support</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-sm hover:text-white transition-colors">Help Center</a></li>
+            <li><a href="#" class="text-sm hover:text-white transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="text-sm hover:text-white transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="text-sm hover:text-white transition-colors">FAQ</a></li>
+          </ul>
+        </div>
+        
+        <!-- Column 4 -->
+        <div class="space-y-4">
+          <h4 class="font-semibold text-white text-lg">Newsletter</h4>
+          <p class="text-sm">
+            Subscribe to get updates and career tips.
+          </p>
+          <div class="mt-2">
+            <div class="flex bg-gray-800 rounded-lg overflow-hidden">
+              <input type="email" placeholder="Your email" 
+                     class="px-4 py-2 w-full bg-transparent text-white focus:outline-none text-sm placeholder-gray-500">
+              <button type="submit" class="bg-purple-600 px-4 text-white hover:bg-purple-700 transition-colors">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Copyright -->
+      <div class="pt-6 border-t border-gray-800 text-center">
+        <p class="text-xs text-gray-500">
+          © 2025 CareerGenius · Built with ❤️ by YourTeam · All rights reserved
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Chatbot Button -->
+  <div id="chatbot-button" class="fixed bottom-6 right-6 z-50">
+    <a href="/chatbot" title="Chat with AI">
+      <button class="gradient-bg text-white rounded-full shadow-xl w-14 h-14 flex items-center justify-center hover:shadow-2xl transition-all transform hover:scale-110 animate-bounce">
+        <i class="fas fa-robot text-2xl"></i>
+      </button>
+    </a>
+  </div>
+
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Mobile menu toggle
+  const mobileMenuButton = document.getElementById('mobileMenuButton');
+  const mobileMenu = document.getElementById('mobileMenu');
+  
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener('click', function() {
+      mobileMenu.classList.toggle('hidden');
+    });
+  }
+  
+  // User dropdown toggle
+  const userBtn = document.getElementById('userIconBtn');
+  const userDropdown = document.getElementById('userDropdown');
+  
+  if (userBtn && userDropdown) {
+    userBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!userDropdown.contains(e.target) && !userBtn.contains(e.target)) {
+        userDropdown.classList.add('hidden');
+      }
+    });
+  }
+  
+  // Search functionality
+  const desktopSearch = document.getElementById('desktopSearch');
+  const mobileSearch = document.getElementById('mobileSearch');
+  
+  function handleSearch(event) {
+    if (event.key === 'Enter') {
+      const query = event.target.value.trim().toLowerCase();
+      
+      // Define search keywords and their corresponding redirect URLs
+      const searchMap = {
+        'mock': '/interview',
+        'mock interview': '/interview',
+        'interview': '/interview',
+        'resume': '/resume',
+        'built resume': '/resume',
+        'library': '/library',
+        'chatbot': '/chatbot',
+        'shop': '/shop',
+        'services': '/services',
+        'about': '/aboutus',
+        'about us': '/aboutus',
+        'appointment': '/appointment',
+        'contact': '/contact',
+        'home': '/',
+        'courses': '/explore'
+      };
+      
+      // Find matching URL
+      let redirectUrl = '/'; // Default to home if no match
+      for (const [keyword, url] of Object.entries(searchMap)) {
+        if (query.includes(keyword)) {
+          redirectUrl = url;
+          break;
+        }
+      }
+      
+      // Redirect to the matched URL
+      window.location.href = redirectUrl;
+    }
+  }
+  
+  if (desktopSearch) {
+    desktopSearch.addEventListener('keydown', handleSearch);
+  }
+  
+  if (mobileSearch) {
+    mobileSearch.addEventListener('keydown', handleSearch);
+  }
+  
+  // Image Slider functionality
+  const slides = document.querySelectorAll('.slide');
+  const prevBtn = document.querySelector('.slider-prev');
+  const nextBtn = document.querySelector('.slider-next');
+  const sliderContainer = document.querySelector('.slider-container');
+  
+  if (slides.length > 0) {
+    let currentSlide = 0;
+    let slideInterval;
+    const slideDuration = 5000; // 5 seconds
+    
+    // Initialize slider
+    function initSlider() {
+      slides[currentSlide].style.opacity = '1';
+      startSlideShow();
+    }
+    
+    // Show specific slide
+    function showSlide(index) {
+      slides.forEach(slide => slide.style.opacity = '0');
+      currentSlide = (index + slides.length) % slides.length;
+      slides[currentSlide].style.opacity = '1';
+      
+      // Update progress bars
+      const progressBars = document.querySelectorAll('.slide .bg-blue-500');
+      progressBars.forEach((bar, i) => {
+        const progress = ((i === currentSlide) ? 25 : (i < currentSlide) ? 100 : 0);
+        bar.style.width = `${progress}%`;
+      });
+    }
+    
+    // Next slide
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+    
+    // Previous slide
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+    
+    // Start automatic slideshow
+    function startSlideShow() {
+      clearInterval(slideInterval);
+      slideInterval = setInterval(nextSlide, slideDuration);
+    }
+    
+    // Pause on hover
+    if (sliderContainer) {
+      sliderContainer.addEventListener('mouseenter', () => {
+        clearInterval(slideInterval);
+      });
+      
+      sliderContainer.addEventListener('mouseleave', startSlideShow);
+    }
+    
+    // Button events
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        nextSlide();
+        startSlideShow();
+      });
+    }
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        prevSlide();
+        startSlideShow();
+      });
+    }
+    
+    // Initialize
+    initSlider();
+  }
+  
+  // Animation on scroll
+  const animateOnScroll = function() {
+    const elements = document.querySelectorAll('.animate__animated');
+    
+    elements.forEach(element => {
+      const elementPosition = element.getBoundingClientRect().top;
+      const screenPosition = window.innerHeight / 1.3;
+      
+      if (elementPosition < screenPosition) {
+        const animationClass = element.getAttribute('data-animate');
+        element.classList.add(animationClass || 'animate__fadeInUp');
+      }
+    });
+  };
+  
+  // Run once on load
+  animateOnScroll();
+  
+  // Run on scroll
+  window.addEventListener('scroll', animateOnScroll);
+});
+</script>
+</body>
+</html>

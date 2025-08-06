@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Interview Preparation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        #resultsContent {
+            display: block;
+        }
+        #graphContent {
+            display: none;
+        }
+        .active-tab {
+            border-bottom: 2px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+        .answer-help {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 100;
+        }
+        .answer-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .answer-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Answer Help Button -->
+    <div id="answerHelpBtn" class="answer-help hidden">
+        <button class="bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Answer Modal -->
+    <div id="answerModal" class="answer-modal hidden">
+        <div class="answer-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Suggested Answer</h3>
+                <button id="closeAnswerModal" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="suggestedAnswerText" class="prose max-w-none"></div>
+            <button id="useThisAnswerBtn" class="mt-4 bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition">
+                Use This Answer
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-gradient text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">AI-Powered Interview Prep, Anytime, Anywhere</h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">Elevate your career with AI-powered interview practice. Sign up for free and start your interview prep today.</p>
+            <button class="bg-white text-indigo-600 font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition duration-300 text-lg">
+                Start Today!
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="stat-card bg-white p-6 rounded-xl shadow-md text-center">
+                <div class="text-4xl font-bold text-indigo-600 mb-2">2.5M+</div>
+                <div class="text-gray-600">Users Joined</div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-xl shadow-md text-center">
+                <div class="text-4xl font-bold text-indigo-600 mb-2">4.8K+</div>
+                <div class="text-gray-600">Companies Using</div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-xl shadow-md text-center">
+                <div class="text-4xl font-bold text-indigo-600 mb-2">12.8K+</div>
+                <div class="text-gray-600">Interview Questions</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sample Questions Section -->
+    <div class="bg-white py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Sample Interview Questions</h2>
+            <div class="max-w-2xl mx-auto bg-gray-50 p-6 rounded-lg">
+                <div class="mb-4">
+                    <h3 class="text-xl font-semibold mb-2">Technical Questions:</h3>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Tell us about Class in object-oriented programming?</strong></li>
+                        <li>Is Function & Method the same thing?</li>
+                        <li>Explain your work pace and how you manage deadlines</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Behavioral Questions:</h3>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>Tell me about a time you faced a difficult challenge at work</li>
+                        <li>How do you handle conflict with team members?</li>
+                        <li>Describe a project you're particularly proud of</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mock Interview Section -->
+    <div class="container mx-auto px-4 py-12">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="text-center p-6 bg-gray-50">
+                <h2 class="text-2xl font-bold">AI Mock Interview</h2>
+                <p class="text-gray-600">Practice your interview skills with our AI-powered system</p>
+            </div>
+            
+            <!-- Interview Setup Section -->
+            <div id="setupSection" class="p-6">
+                <h3 class="text-xl font-semibold mb-4">Select Your Interview Parameters</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Field of Interest</label>
+                        <select id="fieldSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="software">Software Engineering</option>
+                            <option value="data">Data Science</option>
+                            <option value="product">Product Management</option>
+                            <option value="design">UX/UI Design</option>
+                            <option value="marketing">Digital Marketing</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Experience Level</label>
+                        <select id="experienceSelect" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="intern">Intern/Fresher</option>
+                            <option value="junior">Junior (1-3 years)</option>
+                            <option value="mid">Mid-Level (3-5 years)</option>
+                            <option value="senior">Senior (5+ years)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <button id="startInterviewBtn" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition font-medium">
+                        Start Mock Interview
+                    </button>
+                </div>
+            </div>
+
+            <!-- Interview Section (Initially Hidden) -->
+            <div id="interviewSection" class="p-6 hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold">Interview in Progress</h3>
+                    <div class="text-gray-500">
+                        Question <span id="currentQuestion">1</span>/7
+                    </div>
+                </div>
+                
+                <div class="bg-indigo-50 p-4 rounded-md mb-6">
+                    <div id="questionText" class="text-lg font-medium mb-2">Please introduce yourself.</div>
+                    <div class="flex items-center">
+                        <button id="speakQuestionBtn" class="flex items-center text-indigo-600 hover:text-indigo-800 mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" />
+                            </svg>
+                            Hear Question
+                        </button>
+                        <div id="recordingStatus" class="text-sm text-gray-500 hidden">
+                            <span class="flex items-center">
+                                <span class="w-2 h-2 bg-red-500 rounded-full mr-1 animate-pulse"></span>
+                                Recording...
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="answerInput" class="block text-sm font-medium text-gray-700 mb-2">Your Answer</label>
+                    <textarea id="answerInput" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                    
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        <button id="startRecordingBtn" class="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-md transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
+                            </svg>
+                            Record Answer
+                        </button>
+                        <button id="stopRecordingBtn" class="flex items-center bg-red-100 hover:bg-red-200 text-red-800 py-2 px-4 rounded-md transition hidden">
+                            Stop Recording
+                        </button>
+                        <button id="playRecordingBtn" class="flex items-center bg-green-100 hover:bg-green-200 text-green-800 py-2 px-4 rounded-md transition hidden">
+                            Play Recording
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button id="previousQuestionBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-md transition disabled:opacity-50" disabled>
+                        Previous
+                    </button>
+                    <button id="nextQuestionBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md transition">
+                        Next Question
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section (Initially Hidden) -->
+            <div id="resultsSection" class="p-6 hidden">
+                <h2 class="text-2xl font-bold text-center mb-6">Your Interview Results</h2>
+                
+                <!-- Results Navigation Tabs -->
+                <div class="flex border-b mb-6">
+                    <button id="scorecardTab" class="px-4 py-2 active-tab">Scorecard</button>
+                    <button id="graphTab" class="px-4 py-2 text-gray-600 hover:text-indigo-600">Performance Graph</button>
+                </div>
+                
+                <!-- Scorecard Content -->
+                <div id="resultsContent">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-blue-50 p-4 rounded-lg text-center">
+                            <div class="text-4xl font-bold text-blue-600 mb-2" id="grammarScore">85%</div>
+                            <div class="text-gray-700">Grammar Accuracy</div>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg text-center">
+                            <div class="text-4xl font-bold text-green-600 mb-2" id="knowledgeScore">78%</div>
+                            <div class="text-gray-700">Technical Knowledge</div>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg text-center">
+                            <div class="text-4xl font-bold text-purple-600 mb-2" id="confidenceScore">92%</div>
+                            <div class="text-gray-700">Confidence Level</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-3">Feedback</h3>
+                        <div id="feedbackText" class="bg-gray-50 p-4 rounded-md">
+                            <p class="mb-2"><span class="font-medium">Strengths:</span> You demonstrated good technical knowledge in JavaScript concepts and communicated your thoughts clearly.</p>
+                            <p class="mb-2"><span class="font-medium">Areas to Improve:</span> Try to structure your answers more systematically. Some answers were grammatically incorrect.</p>
+                            <p><span class="font-medium">Recommendation:</span> Practice more behavioral questions and review common algorithms.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Graph Content -->
+                <div id="graphContent">
+                    <div class="mb-8 h-96">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center">
+                    <button id="restartInterviewBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-md transition">
+                        Take Another Interview
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold">AI Interview Prep</h3>
+                    <p class="text-gray-400">Elevate your career with AI-powered interview practice</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="hover:text-indigo-300">Privacy Policy</a>
+                    <a href="#" class="hover:text-indigo-300">Terms of Service</a>
+                    <a href="#" class="hover:text-indigo-300">Contact Us</a>
+                </div>
+            </div>
+            <div class="mt-6 text-center text-gray-400 text-sm">
+                &copy; 2023 AI Interview Prep. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+<script>
+    // Interview questions database with sample answers
+    const questions = {
+        software: {
+            intern: [
+                {
+                    question: "Please introduce yourself.",
+                    answer: "My name is [Your Name], and I'm a [Your Degree/Field] graduate from [Your University]. I'm passionate about software development, particularly in [specific technologies]. I've worked on projects involving [mention relevant technologies] and I'm excited to apply my skills in a professional setting."
+                },
+                {
+                    question: "What programming languages are you most comfortable with?",
+                    answer: "I'm most comfortable with [Primary Language], having used it extensively in my academic projects. I also have experience with [Secondary Languages]. For example, I built a [Project Name] using [Language/Framework] which helped me understand [specific concept]."
+                },
+                {
+                    question: "Explain the concept of object-oriented programming.",
+                    answer: "Object-oriented programming (OOP) is a programming paradigm based on the concept of 'objects' which can contain data and code. The four main principles are:<br>1. Encapsulation: Bundling data with methods that operate on that data<br>2. Abstraction: Hiding complex implementation details<br>3. Inheritance: Creating new classes from existing ones<br>4. Polymorphism: Objects behaving differently in different contexts"
+                },
+                {
+                    question: "How would you approach debugging a piece of code that's not working?",
+                    answer: "My debugging approach involves:<br>1. Reproducing the issue consistently<br>2. Checking error messages and logs<br>3. Isolating the problem area<br>4. Using debugging tools or print statements<br>5. Testing fixes in a controlled environment<br>6. Documenting the solution for future reference"
+                },
+                {
+                    question: "What version control systems have you used?",
+                    answer: "I've primarily used Git for version control, along with platforms like GitHub and GitLab. I'm comfortable with branching strategies, pull requests, and resolving merge conflicts. For example, in my [Project Name], I maintained a clean commit history and used feature branches for new developments."
+                },
+                {
+                    question: "Describe a project you've worked on and what you learned from it.",
+                    answer: "I developed a [Project Name] that [brief description]. The main challenges were [specific challenges] which taught me [specific lessons]. I used [technologies] and learned the importance of [specific insight]. The project improved my skills in [specific skills]."
+                },
+                {
+                    question: "Where do you see yourself in 5 years?",
+                    answer: "In five years, I see myself as a skilled [specific role] with deep expertise in [specific technologies]. I hope to have contributed to meaningful projects, mentored junior developers, and continuously improved my technical and leadership skills to take on more responsibility."
+                }
+            ],
+            junior: [
+                {
+                    question: "Please introduce yourself and your experience.",
+                    answer: "I'm [Your Name], a software engineer with [X] years of experience specializing in [your specialization]. I've worked at [Company Names] where I [brief achievements]. My technical strengths include [key technologies], and I'm particularly proud of [specific accomplishment]."
+                },
+                {
+                    question: "Explain the difference between synchronous and asynchronous programming.",
+                    answer: "Synchronous programming executes operations sequentially, blocking until each completes. Asynchronous programming allows operations to run independently, improving efficiency. Key differences:<br>- Synchronous is blocking; async is non-blocking<br>- Sync is simpler; async better for I/O operations<br>- Async uses callbacks/promises/async-await<br>For example, in Node.js I use async/await for database operations to avoid blocking the event loop."
+                },
+                {
+                    question: "How would you optimize a slow database query?",
+                    answer: "To optimize a slow query, I would:<br>1. Analyze the execution plan<br>2. Check for missing indexes on filtered/sorted columns<br>3. Rewrite complex queries or break them down<br>4. Consider denormalization for frequent joins<br>5. Implement caching for repeated queries<br>6. Review database configuration parameters<br>7. Monitor query performance after changes"
+                },
+                {
+                    question: "Describe your experience with testing methodologies.",
+                    answer: "I follow a test pyramid approach:<br>- Unit tests for individual components (Jest/Mocha)<br>- Integration tests for module interactions<br>- E2E tests for critical user journeys<br>I practice TDD for complex logic and maintain high coverage. At [Company], I implemented CI/CD pipelines that ran tests automatically, catching 30% more bugs pre-deployment."
+                },
+                {
+                    question: "What design patterns have you implemented in your projects?",
+                    answer: "I've implemented several patterns:<br>- Singleton for database connections<br>- Factory for object creation<br>- Observer for event handling<br>- Strategy for interchangeable algorithms<br>For example, in our e-commerce system, I used the Strategy pattern to implement different payment processors that could be swapped without changing core logic."
+                },
+                {
+                    question: "How do you stay updated with new technologies?",
+                    answer: "I maintain a structured learning approach:<br>- Follow industry blogs/newsletters<br>- Participate in local meetups/conferences<br>- Take online courses for deep dives<br>- Contribute to open source<br>- Experiment with new tech in side projects<br>Recently, I've been exploring [New Technology] by building [Project] to understand its practical applications."
+                },
+                {
+                    question: "Tell me about a challenging bug you fixed and how you approached it.",
+                    answer: "In our [Project], we had an intermittent memory leak. My approach:<br>1. Reproduced the issue under controlled conditions<br>2. Used profiling tools to identify the leak source<br>3. Traced to unclosed database connections in error cases<br>4. Implemented proper connection cleanup with try-finally<br>5. Added monitoring to catch similar issues early<br>The fix improved system stability by 40% and taught me the importance of proper resource management."
+                }
+            ]
+        },
+        data: {
+            intern: [
+                {
+                    question: "Please introduce yourself.",
+                    answer: "I'm [Your Name], a recent graduate in [Your Degree] from [Your University]. I'm passionate about data science and have developed skills in Python, SQL, and machine learning through coursework and projects. For example, I completed a capstone project analyzing [Dataset] where I applied [specific techniques] to uncover [insights]."
+                },
+                {
+                    question: "What statistical concepts are you familiar with?",
+                    answer: "I'm familiar with core statistical concepts including:<br>- Descriptive statistics (mean, median, distributions)<br>- Probability theory (Bayes' Theorem, distributions)<br>- Hypothesis testing (p-values, t-tests)<br>- Regression analysis (linear, logistic)<br>- Dimensionality reduction (PCA)<br>I've applied these in projects like [Example] where I used [specific method] to [achieve what]."
+                },
+                {
+                    question: "Explain the difference between supervised and unsupervised learning.",
+                    answer: "Supervised learning uses labeled data to train models that predict outcomes, like classification or regression. Unsupervised learning finds patterns in unlabeled data, like clustering or dimensionality reduction.<br>Key differences:<br>- Supervised needs labeled data; unsupervised doesn't<br>- Supervised predicts; unsupervised discovers patterns<br>- Examples: Supervised - spam detection; Unsupervised - customer segmentation"
+                },
+                {
+                    question: "How would you handle missing data in a dataset?",
+                    answer: "My approach to missing data:<br>1. Understand why data is missing (MCAR, MAR, MNAR)<br>2. For small amounts: delete rows/columns<br>3. For numerical data: impute (mean/median/model-based)<br>4. For categorical: mode or new category<br>5. Advanced: multiple imputation or algorithms handling missingness<br>6. Always document and validate the approach"
+                },
+                {
+                    question: "What data visualization tools have you used?",
+                    answer: "I've used:<br>- Python: Matplotlib, Seaborn, Plotly<br>- R: ggplot2<br>- BI tools: Tableau, Power BI<br>For example, in my [Project], I created interactive dashboards with Plotly to visualize sales trends, helping stakeholders identify seasonal patterns."
+                },
+                {
+                    question: "Describe a data analysis project you've worked on.",
+                    answer: "I analyzed [Dataset] to [Objective]. The process involved:<br>1. Data cleaning with Pandas<br>2. Exploratory analysis (distributions, correlations)<br>3. Feature engineering<br>4. Model building (using [Techniques])<br>5. Visualization of results<br>Key findings: [Specific Insights]. The project improved my skills in [specific areas]."
+                },
+                {
+                    question: "Why are you interested in data science?",
+                    answer: "I'm fascinated by how data can reveal hidden patterns and drive decisions. What excites me most is:<br>- Solving complex problems with data<br>- The blend of technical and business understanding<br>- Continuous learning in a rapidly evolving field<br>- The impact data-driven decisions can have<br>My [specific experience] confirmed this passion when I [specific achievement]."
+                }
+            ],
+            junior: [
+                {
+                    question: "Please introduce yourself and your experience.",
+                    answer: "I'm [Your Name], a data scientist with [X] years of experience in [industries]. At [Company], I built [specific models/systems] that [business impact]. My technical toolkit includes [key skills], and I'm particularly proud of [specific achievement], where I [specific contribution] resulting in [quantifiable outcome]."
+                },
+                {
+                    question: "Explain the bias-variance tradeoff.",
+                    answer: "The bias-variance tradeoff describes the tension between model simplicity and complexity:<br>- High bias (underfitting): Simple models that miss patterns<br>- High variance (overfitting): Complex models that capture noise<br>The goal is to minimize total error by finding the right balance. Techniques include:<br>- Regularization to reduce variance<br>- More data/features to reduce bias<br>- Cross-validation to assess generalization"
+                },
+                {
+                    question: "How would you evaluate the performance of a machine learning model?",
+                    answer: "My evaluation approach depends on the problem type:<br>Classification:<br>- Accuracy, Precision, Recall, F1, ROC-AUC<br>- Confusion matrix analysis<br>Regression:<br>- MSE, RMSE, MAE, R-squared<br>Additional considerations:<br>- Business metrics alignment<br>- Fairness across subgroups<br>- Model interpretability<br>- Computational efficiency<br>I always use holdout sets and cross-validation for reliable estimates."
+                },
+                {
+                    question: "Describe your experience with SQL and database systems.",
+                    answer: "I have [X] years of SQL experience across [Database Systems]. My skills include:<br>- Complex queries with joins/subqueries/CTEs<br>- Performance optimization (indexing, query restructuring)<br>- Data modeling and schema design<br>- ETL pipeline development<br>At [Company], I optimized a monthly report query from 30 minutes to 45 seconds by [specific actions]."
+                },
+                {
+                    question: "What's your approach to feature engineering?",
+                    answer: "My feature engineering process:<br>1. Domain understanding and EDA<br>2. Handling missing data and outliers<br>3. Creating meaningful transformations (scaling, encoding)<br>4. Generating interaction features<br>5. Dimensionality reduction if needed<br>6. Iterative validation of feature importance<br>For [Project], I created [specific features] that improved model accuracy by [X%]."
+                },
+                {
+                    question: "Tell me about a time you had to explain technical concepts to non-technical stakeholders.",
+                    answer: "When presenting [Project] results to executives, I:<br>1. Focused on business impact over technical details<br>2. Used relatable analogies (e.g., 'The model is like a...')<br>3. Visualized key insights simply<br>4. Prepared different detail levels<br>5. Checked for understanding<br>The result was [specific positive outcome], and they approved [next steps] based on my recommendations."
+                },
+                {
+                    question: "How do you stay current with developments in data science?",
+                    answer: "I maintain a continuous learning routine:<br>- Reading papers on arXiv, following leaders on Twitter<br>- Taking advanced courses (Coursera, Fast.ai)<br>- Implementing new techniques in side projects<br>- Participating in Kaggle competitions<br>- Attending conferences (PyData, NeurIPS)<br>Recently, I've been exploring [Emerging Technique] by [specific learning activity]."
+                }
+            ]
+        }
+    };
+
+    // Current interview state
+    let currentState = {
+        field: null,
+        level: null,
+        currentQuestionIndex: 0,
+        answers: [],
+        recordings: [],
+        answeredQuestions: []
+    };
+
+    // DOM elements
+    const setupSection = document.getElementById('setupSection');
+    const interviewSection = document.getElementById('interviewSection');
+    const resultsSection = document.getElementById('resultsSection');
+    const startInterviewBtn = document.getElementById('startInterviewBtn');
+    const questionText = document.getElementById('questionText');
+    const answerInput = document.getElementById('answerInput');
+    const currentQuestion = document.getElementById('currentQuestion');
+    const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+    const previousQuestionBtn = document.getElementById('previousQuestionBtn');
+    const startRecordingBtn = document.getElementById('startRecordingBtn');
+    const stopRecordingBtn = document.getElementById('stopRecordingBtn');
+    const playRecordingBtn = document.getElementById('playRecordingBtn');
+    const recordingStatus = document.getElementById('recordingStatus');
+    const speakQuestionBtn = document.getElementById('speakQuestionBtn');
+    const restartInterviewBtn = document.getElementById('restartInterviewBtn');
+    const grammarScore = document.getElementById('grammarScore');
+    const knowledgeScore = document.getElementById('knowledgeScore');
+    const confidenceScore = document.getElementById('confidenceScore');
+    const feedbackText = document.getElementById('feedbackText');
+    const resultsContent = document.getElementById('resultsContent');
+    const graphContent = document.getElementById('graphContent');
+    const scorecardTab = document.getElementById('scorecardTab');
+    const graphTab = document.getElementById('graphTab');
+    const answerHelpBtn = document.getElementById('answerHelpBtn');
+    const answerModal = document.getElementById('answerModal');
+    const closeAnswerModal = document.getElementById('closeAnswerModal');
+    const suggestedAnswerText = document.getElementById('suggestedAnswerText');
+    const useThisAnswerBtn = document.getElementById('useThisAnswerBtn');
+
+    // Speech synthesis and recognition
+    const synth = window.speechSynthesis;
+    let recognition;
+    try {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            answerInput.value = transcript;
+            currentState.answers[currentState.currentQuestionIndex] = {
+                text: transcript,
+                answered: true
+            };
+        };
+        
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error', event.error);
+        };
+    } catch(e) {
+        console.error('Speech recognition not supported', e);
+        startRecordingBtn.disabled = true;
+        startRecordingBtn.textContent = 'Voice Not Supported';
+    }
+
+    // Initialize the application
+    function init() {
+        // Show scorecard by default
+        resultsContent.style.display = 'block';
+        graphContent.style.display = 'none';
+        
+        // Set up tab navigation
+        scorecardTab.addEventListener('click', () => {
+            resultsContent.style.display = 'block';
+            graphContent.style.display = 'none';
+            scorecardTab.classList.add('active-tab');
+            graphTab.classList.remove('active-tab');
+            scorecardTab.classList.remove('text-gray-600');
+            graphTab.classList.add('text-gray-600');
+        });
+        
+        graphTab.addEventListener('click', () => {
+            resultsContent.style.display = 'none';
+            graphContent.style.display = 'block';
+            graphTab.classList.add('active-tab');
+            scorecardTab.classList.remove('active-tab');
+            graphTab.classList.remove('text-gray-600');
+            scorecardTab.classList.add('text-gray-600');
+        });
+
+        // Answer help functionality
+        answerHelpBtn.addEventListener('click', () => {
+            const questionsForField = questions[currentState.field][currentState.level];
+            const currentQ = questionsForField[currentState.currentQuestionIndex];
+            suggestedAnswerText.innerHTML = currentQ.answer;
+            answerModal.classList.remove('hidden');
+        });
+
+        closeAnswerModal.addEventListener('click', () => {
+            answerModal.classList.add('hidden');
+        });
+
+        useThisAnswerBtn.addEventListener('click', () => {
+            const questionsForField = questions[currentState.field][currentState.level];
+            const currentQ = questionsForField[currentState.currentQuestionIndex];
+            answerInput.value = currentQ.answer.replace(/<br>/g, '\n');
+            currentState.answers[currentState.currentQuestionIndex] = {
+                text: answerInput.value,
+                answered: true
+            };
+            answerModal.classList.add('hidden');
+        });
+    }
+
+    // Start interview
+    startInterviewBtn.addEventListener('click', () => {
+        const field = document.getElementById('fieldSelect').value;
+        const level = document.getElementById('experienceSelect').value;
+        
+        currentState = {
+            field,
+            level,
+            currentQuestionIndex: 0,
+            answers: Array(questions[field][level].length).fill({text: '', answered: false}),
+            recordings: Array(questions[field][level].length).fill(null),
+            answeredQuestions: Array(questions[field][level].length).fill(false)
+        };
+        
+        setupSection.classList.add('hidden');
+        interviewSection.classList.remove('hidden');
+        answerHelpBtn.classList.remove('hidden');
+        updateQuestion();
+    });
+
+    // Navigation between questions
+    nextQuestionBtn.addEventListener('click', () => {
+        const currentAnswer = currentState.answers[currentState.currentQuestionIndex];
+        
+        // Check if current question was answered
+        if (!currentAnswer || !currentAnswer.answered) {
+            if (answerInput.value.trim() === '' && !currentState.recordings[currentState.currentQuestionIndex]) {
+                alert('Please provide an answer before continuing');
+                return;
+            } else {
+                // Mark as answered if there's text or recording
+                currentState.answers[currentState.currentQuestionIndex] = {
+                    text: answerInput.value,
+                    answered: true
+                };
+            }
+        }
+        
+        const questionsForField = questions[currentState.field][currentState.level];
+        if (currentState.currentQuestionIndex < questionsForField.length - 1) {
+            currentState.currentQuestionIndex++;
+            updateQuestion();
+            
+            if (currentState.currentQuestionIndex === questionsForField.length - 1) {
+                nextQuestionBtn.textContent = 'Finish Interview';
+            }
+        } else {
+            finishInterview();
+        }
+    });
+
+    previousQuestionBtn.addEventListener('click', () => {
+        if (currentState.currentQuestionIndex > 0) {
+            // Save current answer before moving back
+            currentState.answers[currentState.currentQuestionIndex] = {
+                text: answerInput.value,
+                answered: answerInput.value.trim() !== '' || currentState.recordings[currentState.currentQuestionIndex] !== null
+            };
+            currentState.currentQuestionIndex--;
+            updateQuestion();
+            nextQuestionBtn.textContent = 'Next Question';
+        }
+    });
+
+    // Update question display
+    function updateQuestion() {
+        const questionsForField = questions[currentState.field][currentState.level];
+        const currentQ = questionsForField[currentState.currentQuestionIndex];
+        questionText.textContent = currentQ.question;
+        currentQuestion.textContent = currentState.currentQuestionIndex + 1;
+        
+        // Load answer if exists
+        const currentAnswer = currentState.answers[currentState.currentQuestionIndex];
+        answerInput.value = currentAnswer ? currentAnswer.text : '';
+        
+        previousQuestionBtn.disabled = currentState.currentQuestionIndex === 0;
+    }
+
+    // Save answer when text changes
+    answerInput.addEventListener('input', () => {
+        currentState.answers[currentState.currentQuestionIndex] = {
+            text: answerInput.value,
+            answered: answerInput.value.trim() !== ''
+        };
+    });
+
+    // Voice recording functionality
+    startRecordingBtn.addEventListener('click', () => {
+        if (recognition) {
+            recognition.start();
+            startRecordingBtn.classList.add('hidden');
+            stopRecordingBtn.classList.remove('hidden');
+            recordingStatus.classList.remove('hidden');
+        }
+    });
+
+    stopRecordingBtn.addEventListener('click', () => {
+        if (recognition) {
+            recognition.stop();
+            stopRecordingBtn.classList.add('hidden');
+            playRecordingBtn.classList.remove('hidden');
+            recordingStatus.classList.add('hidden');
+            startRecordingBtn.classList.remove('hidden');
+            
+            // Mark as answered if there's recording
+            currentState.answers[currentState.currentQuestionIndex] = {
+                text: answerInput.value,
+                answered: true
+            };
+        }
+    });
+
+    // Speak question
+    speakQuestionBtn.addEventListener('click', () => {
+        const utterance = new SpeechSynthesisUtterance(questionText.textContent);
+        synth.speak(utterance);
+    });
+
+    // Play recording (simulated - actual implementation would use MediaRecorder API)
+    playRecordingBtn.addEventListener('click', () => {
+        alert("Playing your recorded answer...");
+    });
+
+    // Finish interview and show results
+    function finishInterview() {
+        // Save final answer
+        currentState.answers[currentState.currentQuestionIndex] = {
+            text: answerInput.value,
+            answered: answerInput.value.trim() !== '' || currentState.recordings[currentState.currentQuestionIndex] !== null
+        };
+        
+        // Count answered questions
+        const answeredCount = currentState.answers.filter(a => a.answered).length;
+        
+        // If no questions answered, show special feedback
+        if (answeredCount === 0) {
+            showNoAnswersResults();
+            return;
+        }
+        
+        interviewSection.classList.add('hidden');
+        answerHelpBtn.classList.add('hidden');
+        resultsSection.classList.remove('hidden');
+        
+        // Show scorecard by default
+        resultsContent.style.display = 'block';
+        graphContent.style.display = 'none';
+        scorecardTab.classList.add('active-tab');
+        graphTab.classList.remove('active-tab');
+        scorecardTab.classList.remove('text-gray-600');
+        graphTab.classList.add('text-gray-600');
+        
+        // Calculate scores based on answered questions only
+        const grammar = calculateGrammarScore();
+        const knowledge = calculateKnowledgeScore();
+        const confidence = calculateConfidenceScore();
+        
+        grammarScore.textContent = `${grammar}%`;
+        knowledgeScore.textContent = `${knowledge}%`;
+        confidenceScore.textContent = `${confidence}%`;
+        
+        // Generate feedback based on scores
+        generateFeedback(grammar, knowledge, confidence);
+        
+        // Create radar chart
+        createRadarChart(grammar, knowledge, confidence);
+    }
+
+    function calculateGrammarScore() {
+        // Base score on answer length and structure for answered questions
+        let total = 0;
+        let count = 0;
+        
+        currentState.answers.forEach((answer, index) => {
+            if (answer.answered) {
+                const lengthScore = Math.min(answer.text.length / 50, 1) * 50;
+                const structureScore = answer.text.includes('\n') ? 30 : 10;
+                total += lengthScore + structureScore;
+                count++;
+            }
+        });
+        
+        return count > 0 ? Math.min(Math.round(total / count), 100) : 0;
+    }
+
+    function calculateKnowledgeScore() {
+        // Base score on technical keywords in answers
+        const techKeywords = {
+            software: ['object', 'class', 'function', 'debug', 'algorithm', 'pattern', 'optimize'],
+            data: ['data', 'analysis', 'model', 'statistic', 'feature', 'visualization', 'learning']
+        };
+        
+        let total = 0;
+        let count = 0;
+        
+        currentState.answers.forEach((answer, index) => {
+            if (answer.answered) {
+                const keywords = techKeywords[currentState.field];
+                const keywordCount = keywords.filter(kw => 
+                    answer.text.toLowerCase().includes(kw)
+                ).length;
+                total += Math.min(keywordCount * 15, 100);
+                count++;
+            }
+        });
+        
+        return count > 0 ? Math.min(Math.round(total / count), 100) : 0;
+    }
+
+    function calculateConfidenceScore() {
+        // Base score on answer length and question difficulty
+        let total = 0;
+        let count = 0;
+        
+        currentState.answers.forEach((answer, index) => {
+            if (answer.answered) {
+                const lengthScore = Math.min(answer.text.length / 2, 50);
+                const difficultyScore = index > 3 ? 40 : 30; // Later questions are harder
+                total += lengthScore + difficultyScore;
+                count++;
+            }
+        });
+        
+        return count > 0 ? Math.min(Math.round(total / count), 100) : 0;
+    }
+
+    function generateFeedback(grammar, knowledge, confidence) {
+        let feedback = '';
+        
+        if (grammar > 85) {
+            feedback += `<p class="mb-2"><span class="font-medium">Strengths:</span> Excellent command of language and grammar.</p>`;
+        } else if (grammar > 70) {
+            feedback += `<p class="mb-2"><span class="font-medium">Strengths:</span> Good language skills with minor grammatical errors.</p>`;
+        } else if (grammar > 0) {
+            feedback += `<p class="mb-2"><span class="font-medium">Strengths:</span> You communicated your ideas despite some language barriers.</p>`;
+        }
+        
+        if (knowledge > 80) {
+            feedback += `<p class="mb-2"><span class="font-medium">Technical Knowledge:</span> Strong understanding of ${document.getElementById('fieldSelect').options[document.getElementById('fieldSelect').selectedIndex].text} concepts.</p>`;
+        } else if (knowledge > 60) {
+            feedback += `<p class="mb-2"><span class="font-medium">Technical Knowledge:</span> Adequate knowledge but could benefit from deeper understanding.</p>`;
+        } else if (knowledge > 0) {
+            feedback += `<p class="mb-2"><span class="font-medium">Technical Knowledge:</span> Needs improvement in technical fundamentals.</p>`;
+        }
+        
+        if (confidence > 85) {
+            feedback += `<p class="mb-2"><span class="font-medium">Confidence:</span> Excellent confidence and clarity in responses.</p>`;
+        } else if (confidence > 70) {
+            feedback += `<p class="mb-2"><span class="font-medium">Confidence:</span> Generally confident but could be more assertive.</p>`;
+        } else if (confidence > 0) {
+            feedback += `<p class="mb-2"><span class="font-medium">Confidence:</span> Try to speak more confidently and avoid hesitation.</p>`;
+        }
+        
+        const answeredCount = currentState.answers.filter(a => a.answered).length;
+        const totalQuestions = currentState.answers.length;
+        if (answeredCount < totalQuestions) {
+            feedback += `<p class="mb-2"><span class="font-medium">Note:</span> You answered ${answeredCount} out of ${totalQuestions} questions.</p>`;
+        }
+        
+        feedback += `<p><span class="font-medium">Recommendation:</span> Practice more mock interviews and review ${document.getElementById('fieldSelect').options[document.getElementById('fieldSelect').selectedIndex].text} fundamentals.</p>`;
+        
+        feedbackText.innerHTML = feedback;
+    }
+
+    function showNoAnswersResults() {
+        interviewSection.classList.add('hidden');
+        answerHelpBtn.classList.add('hidden');
+        resultsSection.classList.remove('hidden');
+        
+        grammarScore.textContent = '0%';
+        knowledgeScore.textContent = '0%';
+        confidenceScore.textContent = '0%';
+        
+        feedbackText.innerHTML = `
+            <p class="mb-2"><span class="font-medium">Notice:</span> You didn't answer any questions.</p>
+            <p class="mb-2">To get meaningful feedback, please attempt to answer the questions.</p>
+            <p><span class="font-medium">Recommendation:</span> Try the interview again and provide answers to the questions.</p>
+        `;
+        
+        // Hide chart or show empty state
+        document.getElementById('radarChart').style.display = 'none';
+    }
+
+    // Create radar chart
+    function createRadarChart(grammar, knowledge, confidence) {
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        
+        // Destroy previous chart if exists
+        if (window.radarChart) {
+            window.radarChart.destroy();
+        }
+        
+        // Show the canvas if it was hidden
+        document.getElementById('radarChart').style.display = 'block';
+        
+        window.radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Grammar', 'Technical Knowledge', 'Confidence', 'Clarity', 'Relevance'],
+                datasets: [{
+                    label: 'Your Performance',
+                    data: [
+                        grammar,
+                        knowledge,
+                        confidence,
+                        (grammar + confidence) / 2,
+                        knowledge
+                    ],
+                    backgroundColor: 'rgba(79, 70, 229, 0.2)',
+                    borderColor: 'rgba(79, 70, 229, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(79, 70, 229, 1)'
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: {
+                            stepSize: 20
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+    }
+
+    // Restart interview
+    restartInterviewBtn.addEventListener('click', () => {
+        resultsSection.classList.add('hidden');
+        setupSection.classList.remove('hidden');
+        currentState.currentQuestionIndex = 0;
+        nextQuestionBtn.textContent = 'Next Question';
+        document.getElementById('radarChart').style.display = 'block';
+    });
+
+    // Initialize the application
+    init();
+</script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
+        <!-- Sidebar Navigation -->
+        <div class="w-full md:w-64 bg-white rounded-lg shadow p-4 h-fit">
+            <h1 class="text-xl font-bold mb-6">Edit Profile</h1>
+            <ul class="space-y-2">
+                <li class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer" onclick="navigateTo('index.html')">
+                    <input type="checkbox" id="dashboard" class="mr-2">
+                    <label for="dashboard">Dashboard</label>
+                </li>
+                <li class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer" onclick="navigateTo('favourites.html')">
+                    <input type="checkbox" id="favourites" class="mr-2">
+                    <label for="favourites">Favourites</label>
+                </li>
+                <li class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer" onclick="navigateTo('settings.html')">
+                    <input type="checkbox" id="setting" class="mr-2">
+                    <label for="setting">Setting</label>
+                </li>
+                <li class="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer" onclick="navigateTo('notifications.html')">
+                    <input type="checkbox" id="notification" class="mr-2">
+                    <label for="notification">Notification*</label>
+                </li>
+                <li class="flex items-center p-2 rounded bg-blue-50">
+                    <input type="checkbox" id="profile" class="mr-2" checked>
+                    <label for="profile">Profile</label>
+                </li>
+            </ul>
+            
+            <div class="mt-6 pt-4 border-t">
+                <button class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition" onclick="navigateTo('profile.html')">
+                    Edit Profile
+                </button>
+            </div>
+            
+            <div class="mt-4">
+                <h3 class="font-semibold">Security</h3>
+                <div class="h-px bg-gray-200 my-2"></div>
+            </div>
+        </div>
+
+        <!-- Main Profile Content -->
+        <div class="flex-1 bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold mb-6">Personal Information</h2>
+            
+            <form id="profileForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name*</label>
+                        <input type="text" name="fullName" id="fullName" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p id="fullNameError" class="text-red-500 text-xs mt-1 hidden">Full name is required</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email*</label>
+                        <input type="email" name="email" id="email" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p id="emailError" class="text-red-500 text-xs mt-1 hidden">Please enter a valid email</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input type="tel" name="phone" id="phone" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <p id="phoneError" class="text-red-500 text-xs mt-1 hidden">Please enter a valid phone number</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                        <input type="text" name="city" id="city"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">State/Province</label>
+                        <input type="text" name="state" id="state"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                        <select name="country" id="country" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select Country</option>
+                            <option value="China">China</option>
+                            <option value="USA">United States</option>
+                            <option value="Canada">Canada</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="Japan">Japan</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Zip/Postal Code</label>
+                        <input type="text" name="zipCode" id="zipCode"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                
+                <!-- Additional Profile Fields -->
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold mb-4">Additional Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                            <input type="date" name="dob" id="dob"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                            <select name="gender" id="gender" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Prefer not to say</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t flex flex-col sm:flex-row justify-between gap-4">
+                    <button type="button" id="logoutBtn" class="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition">
+                        Log Out
+                    </button>
+                    
+                    <div class="flex gap-3">
+                        <button type="button" id="backBtn" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition">
+                            Back To Home
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load profile data from localStorage
+            loadProfileData();
+            
+            // Form validation
+            const form = document.getElementById('profileForm');
+            const fullNameInput = document.getElementById('fullName');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            
+            // Validate full name
+            fullNameInput.addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    document.getElementById('fullNameError').classList.remove('hidden');
+                    this.classList.add('border-red-500');
+                } else {
+                    document.getElementById('fullNameError').classList.add('hidden');
+                    this.classList.remove('border-red-500');
+                }
+            });
+            
+            // Validate email
+            emailInput.addEventListener('blur', function() {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(this.value)) {
+                    document.getElementById('emailError').classList.remove('hidden');
+                    this.classList.add('border-red-500');
+                } else {
+                    document.getElementById('emailError').classList.add('hidden');
+                    this.classList.remove('border-red-500');
+                }
+            });
+            
+            // Simple phone validation
+            phoneInput.addEventListener('blur', function() {
+                if (this.value && !/^[\d\s\-()+]{10,}$/.test(this.value)) {
+                    document.getElementById('phoneError').classList.remove('hidden');
+                    this.classList.add('border-red-500');
+                } else {
+                    document.getElementById('phoneError').classList.add('hidden');
+                    this.classList.remove('border-red-500');
+                }
+            });
+            
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate required fields
+                let isValid = true;
+                
+                if (!fullNameInput.value.trim()) {
+                    document.getElementById('fullNameError').classList.remove('hidden');
+                    fullNameInput.classList.add('border-red-500');
+                    isValid = false;
+                }
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailInput.value)) {
+                    document.getElementById('emailError').classList.remove('hidden');
+                    emailInput.classList.add('border-red-500');
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    return;
+                }
+                
+                // Save profile data
+                saveProfileData();
+                
+                // Show success message
+                showToast('Profile updated successfully!', 'success');
+            });
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if(confirm('Are you sure you want to log out?')) {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userProfile');
+                    window.location.href = 'login.html';
+                }
+            });
+            
+            // Back button
+            document.getElementById('backBtn').addEventListener('click', function() {
+                window.location.href = 'index.html';
+            });
+            
+            // Load profile data from localStorage
+            function loadProfileData() {
+                const profileData = JSON.parse(localStorage.getItem('userProfile')) || {
+                    fullName: 'Zhenya Ryuzhuk',
+                    email: 'zhenyayuzhuk@gmail.com',
+                    phone: '587-556-998-02',
+                    city: 'Shanghai',
+                    state: 'Hallem',
+                    country: 'China',
+                    zipCode: '7789',
+                    dob: '',
+                    gender: ''
+                };
+                
+                // Populate form fields
+                document.getElementById('fullName').value = profileData.fullName;
+                document.getElementById('email').value = profileData.email;
+                document.getElementById('phone').value = profileData.phone;
+                document.getElementById('city').value = profileData.city;
+                document.getElementById('state').value = profileData.state;
+                document.getElementById('country').value = profileData.country;
+                document.getElementById('zipCode').value = profileData.zipCode;
+                document.getElementById('dob').value = profileData.dob;
+                document.getElementById('gender').value = profileData.gender;
+            }
+            
+            // Save profile data to localStorage
+            function saveProfileData() {
+                const profileData = {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    country: document.getElementById('country').value,
+                    zipCode: document.getElementById('zipCode').value,
+                    dob: document.getElementById('dob').value,
+                    gender: document.getElementById('gender').value
+                };
+                
+                localStorage.setItem('userProfile', JSON.stringify(profileData));
+            }
+            
+            // Show toast notification
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-md shadow-lg text-white ${
+                    type === 'success' ? 'bg-green-500' : 'bg-red-500'
+                }`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        });
+        
+        // Navigation function
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>
